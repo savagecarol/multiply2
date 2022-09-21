@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-abstract class Tile {
+abstract class Style {
 
 
   static const Map<int, Color> tileColor = {

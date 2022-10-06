@@ -33,35 +33,101 @@ class _GameState extends State<Game> {
               StringValues.appName,
               style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
             ),
-            backgroundColor: Colors.teal,
+            backgroundColor: StringValues.appColor,
+          ),
+          bottomNavigationBar:    Padding(
+            padding: const EdgeInsets.only(top: 0 , left: 32 , right: 32 , bottom: 32),
+            child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          FloatingActionButton(
+              backgroundColor: StringValues.appColor,
+              onPressed: ()  {},
+              tooltip: 'Increment',
+              child:  const Icon(Icons.restart_alt_outlined),
+            ),
+                FloatingActionButton(
+              backgroundColor: StringValues.appColor,
+              onPressed: () async {
+                setState(() {
+                  _isLoading = true;
+                });
+                await Future.delayed(const Duration(seconds: 2), () {
+                  ShareFilesAndScreenshotWidgets().shareScreenshot(
+                      previewContainer,
+                      MediaQuery.of(context).size.height.toInt(),
+                      "Title",
+                      "Name.png",
+                      "image/png",
+                      text: "This is the caption!");
+                });
+
+                setState(() {
+                  _isLoading = false;
+                });
+              },
+              tooltip: 'Increment',
+              child: _isLoading
+                  ? const SizedBox(
+                      height: 16,
+                      width: 16,
+                      child: CircularProgressIndicator(color: Colors.white),
+                    )
+                  : const Icon(Icons.share),
+            ),
+                        ],
+                      ),
           ),
           body: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(32),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Row(
+                     mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+
+                        Container(
+                          width: 130,
+                        decoration: const BoxDecoration(
+                                color: StringValues.appColor,
+                          borderRadius: BorderRadius.all(Radius.circular(8))
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: const [
+                              Text(StringValues.score  , style: TextStyle(color: Colors.white ,  fontWeight: FontWeight.bold , fontSize: 16)) , 
+                              SizedBox(height : 8),
+                              Text("200"  , style: TextStyle(color: Colors.white , fontWeight: FontWeight.bold)) , 
+                            ],
+                          ),
+                        ),
+                      ),
+
+                        Container(
+                           width: 130,
+                        decoration: const BoxDecoration(
+                                color: StringValues.appColor,
+                          borderRadius: BorderRadius.all(Radius.circular(8))
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: const [
+                              Text(StringValues.highScore  , style: TextStyle(color: Colors.white , fontWeight: FontWeight.bold , fontSize: 16)) ,
+                              SizedBox(height : 8),
+                              Text("200"  , style: TextStyle(color: Colors.white , fontWeight: FontWeight.bold)) , 
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ) , 
+                ],
+              ),
             ),
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              setState(() {
-                _isLoading = true;
-              });
-              Future.delayed(Duration(seconds: 5), () {
-                ShareFilesAndScreenshotWidgets().shareScreenshot(
-                    previewContainer,
-                    MediaQuery.of(context).size.height.toInt(),
-                    "Title",
-                    "Name.png",
-                    "image/png",
-                    text: "This is the caption!");
-              });
-              setState(() {
-                _isLoading = false;
-              });
-            },
-            tooltip: 'Increment',
-            child: _isLoading
-                ? const CircularProgressIndicator()
-                : const Icon(Icons.share),
           ),
         ),
       ),

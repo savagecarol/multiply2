@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:multiply2/presentation/game/Game.dart';
+import 'package:multiply2/presentation/Game.dart';
 import 'package:multiply2/utils/StringValues.dart';
 
 void main() {

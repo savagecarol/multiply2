@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:multiply2/utils/Global.dart';
 
-class Tile {
-  final int x;
-  final int y;
-  int value;
-  late Animation<double> animatedX;
-  late Animation<double> animatedY;
-  late Animation<double> size;
-  late Animation<int> animatedValue;
+class Tile extends StatefulWidget {
+  String number;
+  double width,height;
+  Color color;
+  double size;
+  Tile(this.number,this.width,this.height,this.color,this.size, {Key? key}) : super(key: key);
 
-  Tile(this.x, this.y, this.value) {
-    resetAnimations();
-  }
-
-  void resetAnimations() {
-    animatedX = AlwaysStoppedAnimation(x.toDouble());
-    animatedY = AlwaysStoppedAnimation(y.toDouble());
-    size = AlwaysStoppedAnimation(1.0);
-    animatedValue = AlwaysStoppedAnimation(value);
-  }
+  @override
+    State<StatefulWidget> createState() {
+      return _TileState();
+    }
+}
+class _TileState extends State<Tile> {
+  @override
+    Widget build(BuildContext context) {
+      return Container(
+        width: widget.width,
+        height: widget.height,
+        decoration: BoxDecoration(
+            color: widget.color,
+            borderRadius: const BorderRadius.all(Radius.circular(10.0))),
+        child: Center(
+          child: Text(widget.number,style: TextStyle(fontSize:widget.size,fontWeight: FontWeight.bold,color: Colors.white),),
+        ),
+      );
+    }
 }

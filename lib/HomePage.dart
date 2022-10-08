@@ -5,6 +5,7 @@ import 'package:multiply2/grid.dart';
 import 'MyColor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
+import 'dart:math' as math;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -15,7 +16,12 @@ class HomePage extends StatefulWidget {
   }
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller =
+      AnimationController(vsync: this, duration: Duration(seconds: 2))
+        ..repeat();
+  bool isLoading = true;
   List<List<int>> grid = blankGrid();
   List<List<int>> gridNew = blankGrid();
   late SharedPreferences sharedPreferences;
@@ -144,7 +150,7 @@ class _HomePageState extends State<HomePage> {
       bool gamewon = isGameWon(grid);
       if (gamewon) {
         setState(() {
-          isgameWon=true;          
+          isgameWon = true;
         });
       }
     }
@@ -153,9 +159,19 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    startTime();
     gridNew = blankGrid();
     addNumber(grid, gridNew);
     addNumber(grid, gridNew);
+  }
+
+  startTime() async {
+    var duration = const Duration(seconds: 5);
+    Timer(duration, () {
+      setState(() {
+        isLoading = false;
+      });
+    });
   }
 
   Future<String> getHighScore() async {
@@ -170,206 +186,242 @@ class _HomePageState extends State<HomePage> {
     double width = MediaQuery.of(context).size.width;
     double gridWidth = (width - 80) / 4;
     double gridHeight = gridWidth;
-    double height =  (gridHeight * 4) + 48;
+    double height = (gridHeight * 4) + 48;
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text(
-            '2048',
-            style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-          ),
-          backgroundColor:  Colors.blue[400],
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16 , vertical: 64),
-          child: Column(
-            children: <Widget>[  
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                   Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color:  Colors.blue[400],
-                  ),
-                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32 , vertical: 16),
-                    child: Center(
-                      child: Column(
-                        children:  [
-                        const Text(
-                           'SCORE',
-                           style: TextStyle(
-                               fontSize: 24.0,
-                               color: Colors.white,
-                               fontWeight: FontWeight.bold),
-                         ),
-                          const SizedBox(height : 8),
-                         Text(
-                            '${score}',
-                            style: const TextStyle(
-                                fontSize: 28.0,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          )
-                          ]),
-                    )),
-                  ),
-                          Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color:  Colors.blue[400],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: IconButton(
-                    iconSize: 35.0,
-                    icon: const Icon(
-                      Icons.refresh,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        grid = blankGrid();
-                        gridNew = blankGrid();
-                        grid = addNumber(grid, gridNew);
-                        grid = addNumber(grid, gridNew);
-                        score = 0;
-                        isgameOver=false;
-                        isgameWon=false;
-                      });
+    return isLoading
+        ? SafeArea(
+            child: Scaffold(
+              body: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Center(
+                  child: AnimatedBuilder(
+                    animation: _controller,
+                    builder: (_, child) {
+                      return Transform.rotate(
+                        angle: _controller.value * 2 * math.pi,
+                        child: child,
+                      );
                     },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: const Color(0xFF4FC3F7)),
+                      height: 180,
+                      width: 180,
+                      child: const Center(
+                        child: Text(
+                          "2048",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 64,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ) ,
-                   Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color:  Colors.blue[400],
-                  ),
-                  child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32 , vertical: 16),
-                    child: Center(
-                      child: Column(
-                        children: <Widget>[
-                         const Text(
-                             'BEST',
-                            style: TextStyle(
-                               fontSize: 24,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
+              ),
+            ),
+          )
+        : SafeArea(
+            child: Scaffold(
+              backgroundColor: Colors.white,
+              appBar: AppBar(
+                centerTitle: true,
+                title: const Text(
+                  '2048',
+                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                ),
+                backgroundColor: Colors.blue[400],
+              ),
+              body: SingleChildScrollView(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 64),
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Colors.blue[400],
+                            ),
+                            child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 32, vertical: 16),
+                                child: Center(
+                                  child: Column(children: [
+                                    const Text(
+                                      'SCORE',
+                                      style: TextStyle(
+                                          fontSize: 24.0,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      '${score}',
+                                      style: const TextStyle(
+                                          fontSize: 28.0,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    )
+                                  ]),
+                                )),
                           ),
-                          const SizedBox(height : 8),
-                          FutureBuilder<String>(
-                            future: getHighScore(),
-                            builder: (ctx, snapshot) {
-                              if (snapshot.hasData) {
-                                return Text(
-                                  snapshot.data!,
-                                  style: const TextStyle(
-                                     fontSize: 28,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                );
-                              } else {
-                                return const Text(
-                                  '0',
-                                  style: TextStyle(
-                                    fontSize: 28,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                );
-                              }
-                            },
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Colors.blue[400],
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: IconButton(
+                                iconSize: 35.0,
+                                icon: const Icon(
+                                  Icons.refresh,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    grid = blankGrid();
+                                    gridNew = blankGrid();
+                                    grid = addNumber(grid, gridNew);
+                                    grid = addNumber(grid, gridNew);
+                                    score = 0;
+                                    isgameOver = false;
+                                    isgameWon = false;
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Colors.blue[400],
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 32, vertical: 16),
+                              child: Center(
+                                child: Column(
+                                  children: <Widget>[
+                                    const Text(
+                                      'BEST',
+                                      style: TextStyle(
+                                          fontSize: 24,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    FutureBuilder<String>(
+                                      future: getHighScore(),
+                                      builder: (ctx, snapshot) {
+                                        if (snapshot.hasData) {
+                                          return Text(
+                                            snapshot.data!,
+                                            style: const TextStyle(
+                                                fontSize: 28,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold),
+                                          );
+                                        } else {
+                                          return const Text(
+                                            '0',
+                                            style: TextStyle(
+                                                fontSize: 28,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold),
+                                          );
+                                        }
+                                      },
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
                           )
                         ],
                       ),
-                    ),
-                  ),
-                )
-    
-                ],
-              ),
-              const SizedBox(height: 48,),
-              Container(
-                height: height,
-                decoration: const  BoxDecoration(
-                    color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(5))
-                ),
-                child: Stack(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: GestureDetector(
-                        child: GridView.count(
-                          primary: false,
-                          crossAxisSpacing: 5.0,
-                          mainAxisSpacing: 5.0,
-                          crossAxisCount: 4,
-                          children: getGrid(gridWidth, gridHeight),
-                        ),
-                        onVerticalDragEnd: (DragEndDetails details) {
-                          //primaryVelocity -ve up +ve down
-                          if (details.primaryVelocity! < 0) {
-                            handleGesture(0);
-                          } else if (details.primaryVelocity! > 0) {
-                            handleGesture(1);
-                          }
-                        },
-                        onHorizontalDragEnd: (details) {
-                          //-ve right, +ve left
-                          if (details.primaryVelocity! > 0) {
-                            handleGesture(2);
-                          } else if (details.primaryVelocity! < 0) {
-                            handleGesture(3);
-                          }
-                        },
+                      const SizedBox(
+                        height: 48,
                       ),
-                    ),
-                    isgameOver
-                        ? Container(
-                            height: height,
+                      Container(
+                        height: height,
+                        decoration: const BoxDecoration(
                             color: Colors.white,
-                            child: const Center(
-                              child: Text(
-                                'Game over!',
-                                style: TextStyle(
-                                  
-                                    fontSize: 32.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
+                            borderRadius: BorderRadius.all(Radius.circular(5))),
+                        child: Stack(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: GestureDetector(
+                                child: GridView.count(
+                                  primary: false,
+                                  crossAxisSpacing: 5.0,
+                                  mainAxisSpacing: 5.0,
+                                  crossAxisCount: 4,
+                                  children: getGrid(gridWidth, gridHeight),
+                                ),
+                                onVerticalDragEnd: (DragEndDetails details) {
+                                  //primaryVelocity -ve up +ve down
+                                  if (details.primaryVelocity! < 0) {
+                                    handleGesture(0);
+                                  } else if (details.primaryVelocity! > 0) {
+                                    handleGesture(1);
+                                  }
+                                },
+                                onHorizontalDragEnd: (details) {
+                                  //-ve right, +ve left
+                                  if (details.primaryVelocity! > 0) {
+                                    handleGesture(2);
+                                  } else if (details.primaryVelocity! < 0) {
+                                    handleGesture(3);
+                                  }
+                                },
                               ),
                             ),
-                          )
-                        : const SizedBox(),
-                    isgameWon
-                        ? Container(
-                            height: height,
-                            color: Colors.white,
-                            child: const Center(
-                              child: Text(
-                                'You Won!',
-                                style: TextStyle(
-                                    fontSize: 32.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
-                              ),
-                            ),
-                          )
-                        : const SizedBox(),    
-                  ],
+                            isgameOver
+                                ? Container(
+                                    height: height,
+                                    color: Colors.white,
+                                    child: const Center(
+                                      child: Text(
+                                        'Game over!',
+                                        style: TextStyle(
+                                            fontSize: 32.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black),
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox(),
+                            isgameWon
+                                ? Container(
+                                    height: height,
+                                    color: Colors.white,
+                                    child: const Center(
+                                      child: Text(
+                                        'You Won!',
+                                        style: TextStyle(
+                                            fontSize: 32.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black),
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox(),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ],
-          ),
-        ),
-        ),
-      ),
-    );
+            ),
+          );
   }
 }

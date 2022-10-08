@@ -1,11 +1,9 @@
 class MyColor {
-  static int gridBackground=0xFFa2917d;
-  static int gridColorTwoFour=0xFFeee4da;
-  static int fontColorTwoFour=0xFF766c62;
-  static int emptyGridBackground=0xFFbfafa0;
-  static int gridColorEightSixtyFourTwoFiftySix=0xFFf5b27e;
-  static int gridColorOneTwentyEightFiveOneTwo=0xFFf77b5f;
-  static int gridColorSixteenThirtyTwoOneZeroTwoFour=0xFFecc402;
-  static int gridColorWin=0xFF60d992;
-  static int transparentWhite=0x80FFFFFF;
+  static int emptyGridBackground = 0xFFB3E5FC;
+
+  static int gridColorTwoFour = 0xFF4FC3F7;
+  static int gridColorEightSixtyFourTwoFiftySix = 0xFF03A9F4;
+  static int gridColorOneTwentyEightFiveOneTwo = 0xFF01579B;
+  static int gridColorSixteenThirtyTwoOneZeroTwoFour = 0xFF1565C0;
+  static int gridColorWin = 0xFF3F51B5;
 }

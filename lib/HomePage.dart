@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> {
           grid = addNumber(grid, gridNew);
         });
       }
-      
+
       bool gameover = isGameOver(grid);
       if (gameover) {
         setState(() {
@@ -170,210 +170,205 @@ class _HomePageState extends State<HomePage> {
     double width = MediaQuery.of(context).size.width;
     double gridWidth = (width - 80) / 4;
     double gridHeight = gridWidth;
-    double height =  (gridHeight * 4) + 50;
+    double height =  (gridHeight * 4) + 48;
 
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          '2048',
-          style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            '2048',
+            style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+          ),
+          backgroundColor:  Colors.blue[400],
         ),
-        backgroundColor: Color(MyColor.gridBackground),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16 , vertical: 32),
-        child: Column(
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                 Container(
+        body: SingleChildScrollView(
+          child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16 , vertical: 64),
+          child: Column(
+            children: <Widget>[  
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                   Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color:  Colors.blue[400],
+                  ),
+                   child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32 , vertical: 16),
+                    child: Center(
+                      child: Column(
+                        children:  [
+                        const Text(
+                           'SCORE',
+                           style: TextStyle(
+                               fontSize: 24.0,
+                               color: Colors.white,
+                               fontWeight: FontWeight.bold),
+                         ),
+                          const SizedBox(height : 8),
+                         Text(
+                            '${score}',
+                            style: const TextStyle(
+                                fontSize: 28.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          )
+                          ]),
+                    )),
+                  ),
+                          Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
-                  color: Color(MyColor.gridBackground),
-                ),
-                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32 , vertical: 16),
-                  child: Center(
-                    child: Column(
-                      children:  [
-                      const Text(
-                         'Score',
-                         style: TextStyle(
-                             fontSize: 24.0,
-                             color: Colors.white,
-                             fontWeight: FontWeight.bold),
-                       ),
-                         SizedBox(height : 8),
-                       Text(
-                          '${score}',
-                          style: const TextStyle(
-                              fontSize: 20.0,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        )
-                        ]),
-                  )),
-                ),
-
-                 Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color: Color(MyColor.gridBackground),
+                  color:  Colors.blue[400],
                 ),
                 child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32 , vertical: 16),
-                  child: Center(
-                    child: Column(
-                      children: <Widget>[
-                       const Text(
-                          'Best',
-                          style: TextStyle(
-                             fontSize: 24,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height : 8),
-                        FutureBuilder<String>(
-                          future: getHighScore(),
-                          builder: (ctx, snapshot) {
-                            if (snapshot.hasData) {
-                              return Text(
-                                snapshot.data!,
-                                style: const TextStyle(
-                                   fontSize: 20,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              );
-                            } else {
-                              return const Text(
-                                '0',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              );
-                            }
-                          },
-                        )
-                      ],
+                  padding: const EdgeInsets.all(10.0),
+                  child: IconButton(
+                    iconSize: 35.0,
+                    icon: const Icon(
+                      Icons.refresh,
+                      color: Colors.white,
                     ),
+                    onPressed: () {
+                      setState(() {
+                        grid = blankGrid();
+                        gridNew = blankGrid();
+                        grid = addNumber(grid, gridNew);
+                        grid = addNumber(grid, gridNew);
+                        score = 0;
+                        isgameOver=false;
+                        isgameWon=false;
+                      });
+                    },
                   ),
                 ),
-              )
-
-              ],
-            ),
-            SizedBox(height: 32,),
-            Container(
-              height: height,
-              decoration:  BoxDecoration(
-                  color: Color(MyColor.gridBackground),
-                borderRadius: const BorderRadius.all(Radius.circular(5))
-              ),
-              child: Stack(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: GestureDetector(
-                      child: GridView.count(
-                        primary: false,
-                        crossAxisSpacing: 5.0,
-                        mainAxisSpacing: 5.0,
-                        crossAxisCount: 4,
-                        children: getGrid(gridWidth, gridHeight),
+              ) ,
+                   Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color:  Colors.blue[400],
+                  ),
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32 , vertical: 16),
+                    child: Center(
+                      child: Column(
+                        children: <Widget>[
+                         const Text(
+                             'BEST',
+                            style: TextStyle(
+                               fontSize: 24,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height : 8),
+                          FutureBuilder<String>(
+                            future: getHighScore(),
+                            builder: (ctx, snapshot) {
+                              if (snapshot.hasData) {
+                                return Text(
+                                  snapshot.data!,
+                                  style: const TextStyle(
+                                     fontSize: 28,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                );
+                              } else {
+                                return const Text(
+                                  '0',
+                                  style: TextStyle(
+                                    fontSize: 28,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                );
+                              }
+                            },
+                          )
+                        ],
                       ),
-                      onVerticalDragEnd: (DragEndDetails details) {
-                        //primaryVelocity -ve up +ve down
-                        if (details.primaryVelocity! < 0) {
-                          handleGesture(0);
-                        } else if (details.primaryVelocity! > 0) {
-                          handleGesture(1);
-                        }
-                      },
-                      onHorizontalDragEnd: (details) {
-                        //-ve right, +ve left
-                        if (details.primaryVelocity! > 0) {
-                          handleGesture(2);
-                        } else if (details.primaryVelocity! < 0) {
-                          handleGesture(3);
-                        }
-                      },
                     ),
                   ),
-                  isgameOver
-                      ? Container(
-                          height: height,
-                          color: Color(MyColor.transparentWhite),
-                          child: Center(
-                            child: Text(
-                              'Game over!',
-                              style: TextStyle(
-                                  fontSize: 30.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(MyColor.gridBackground)),
-                            ),
-                          ),
-                        )
-                      : const SizedBox(),
-                  isgameWon
-                      ? Container(
-                          height: height,
-                          color: Color(MyColor.transparentWhite),
-                          child: Center(
-                            child: Text(
-                              'You Won!',
-                              style: TextStyle(
-                                  fontSize: 30.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(MyColor.gridBackground)),
-                            ),
-                          ),
-                        )
-                      : const SizedBox(),    
+                )
+    
                 ],
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: Color(MyColor.gridBackground),
-                    ),
-                    child: Padding(
+              const SizedBox(height: 48,),
+              Container(
+                height: height,
+                decoration: const  BoxDecoration(
+                    color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(5))
+                ),
+                child: Stack(
+                  children: <Widget>[
+                    Padding(
                       padding: const EdgeInsets.all(10.0),
-                      child: IconButton(
-                        iconSize: 35.0,
-                        icon: const Icon(
-                          Icons.refresh,
-                          color: Colors.white70,
+                      child: GestureDetector(
+                        child: GridView.count(
+                          primary: false,
+                          crossAxisSpacing: 5.0,
+                          mainAxisSpacing: 5.0,
+                          crossAxisCount: 4,
+                          children: getGrid(gridWidth, gridHeight),
                         ),
-                        onPressed: () {
-                          setState(() {
-                            grid = blankGrid();
-                            gridNew = blankGrid();
-                            grid = addNumber(grid, gridNew);
-                            grid = addNumber(grid, gridNew);
-                            score = 0;
-                            isgameOver=false;
-                            isgameWon=false;
-                          });
+                        onVerticalDragEnd: (DragEndDetails details) {
+                          //primaryVelocity -ve up +ve down
+                          if (details.primaryVelocity! < 0) {
+                            handleGesture(0);
+                          } else if (details.primaryVelocity! > 0) {
+                            handleGesture(1);
+                          }
+                        },
+                        onHorizontalDragEnd: (details) {
+                          //-ve right, +ve left
+                          if (details.primaryVelocity! > 0) {
+                            handleGesture(2);
+                          } else if (details.primaryVelocity! < 0) {
+                            handleGesture(3);
+                          }
                         },
                       ),
                     ),
-                  )
-                ],
+                    isgameOver
+                        ? Container(
+                            height: height,
+                            color: Colors.white,
+                            child: const Center(
+                              child: Text(
+                                'Game over!',
+                                style: TextStyle(
+                                  
+                                    fontSize: 32.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                              ),
+                            ),
+                          )
+                        : const SizedBox(),
+                    isgameWon
+                        ? Container(
+                            height: height,
+                            color: Colors.white,
+                            child: const Center(
+                              child: Text(
+                                'You Won!',
+                                style: TextStyle(
+                                    fontSize: 32.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                              ),
+                            ),
+                          )
+                        : const SizedBox(),    
+                  ],
+                ),
               ),
-            )
-          ],
+            ],
+          ),
         ),
-      ),
+        ),
       ),
     );
   }

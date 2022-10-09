@@ -177,12 +177,13 @@ class _HomePageState extends State<HomePage>
   Future<String> getHighScore() async {
     sharedPreferences = await SharedPreferences.getInstance();
     int? score = sharedPreferences.getInt('high_score');
+    if (score == null) score = 0;
     return score.toString();
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+  
     double width = MediaQuery.of(context).size.width;
     double gridWidth = (width - 80) / 4;
     double gridHeight = gridWidth;
@@ -191,6 +192,7 @@ class _HomePageState extends State<HomePage>
     return isLoading
         ? SafeArea(
             child: Scaffold(
+              backgroundColor: Colors.white,
               body: Padding(
                 padding: const EdgeInsets.all(32),
                 child: Center(
@@ -226,14 +228,6 @@ class _HomePageState extends State<HomePage>
         : SafeArea(
             child: Scaffold(
               backgroundColor: Colors.white,
-              appBar: AppBar(
-                centerTitle: true,
-                title: const Text(
-                  '2048',
-                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-                ),
-                backgroundColor: Colors.blue[400],
-              ),
               body: SingleChildScrollView(
                 child: Padding(
                   padding:
@@ -322,7 +316,9 @@ class _HomePageState extends State<HomePage>
                                       builder: (ctx, snapshot) {
                                         if (snapshot.hasData) {
                                           return Text(
-                                            snapshot.data!,
+                                            snapshot.data == null
+                                                ? "0"
+                                                : snapshot.data!,
                                             style: const TextStyle(
                                                 fontSize: 28,
                                                 color: Colors.white,
